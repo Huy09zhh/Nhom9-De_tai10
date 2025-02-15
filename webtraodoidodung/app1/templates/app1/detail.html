@@ -1,0 +1,57 @@
+{% extends 'app1/base.html' %}
+{% load static %}
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% block detail  %}
+        {% for product in products %}
+        <div class="container mt-5 mb-5">
+            <div class="row d-flex justify-content-center">
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="images p-3">
+                                    <div class="text-center p-4"> <img id="main-image" src="{{product.ImageURL}}" width="250" /> </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="product p-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <i class="fa fa-long-arrow-left"></i> 
+                                            <span class="ml-1">
+                                                <a href="{% url 'home' %}">Trở Về Trang Chủ</a>
+                                            </span> 
+                                        </div> 
+                                        <!-- giỏ hàng checkout -->
+                                        <a href="{% url 'checkout' %}">Danh sách trao đổi</a></span>
+                                    </div>                                    
+                                    <div class="mt-4 mb-3"> <span class="text-uppercase text-muted brand">Orianz</span>
+                                        <h5 class="text-uppercase">{{product.name}}</h5>
+                                        <div class="price d-flex flex-row align-items-center"> <span class="act-price">{{product.price}} đồng</span>
+                                        </div>
+                                    </div>
+                                    <p class="about">{{product.detail}}</p>
+
+                                <div class ="cart nt 4 align-items-center">
+                                    <button data-product={{product.id}} data-action = "add" class="btn btn-danger text-uppercase mr-2 px-4-add-btn update-itemtrade">Thêm vào giỏ hàng</button>
+                                    {% comment %} <i class="fa fa-heart text-muted"></i> <i class="fa fa-share-alt text-muted"></i> </div> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% endblock detail %}
+    </body>
+</html>
