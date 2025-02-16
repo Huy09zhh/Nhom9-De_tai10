@@ -24,7 +24,9 @@ class Product(models.Model):
     price = models.FloatField()
     digital = models.BooleanField(default=False,null=True,blank=False)
     image = models.ImageField(null=True,blank=True)
-
+    detail = models.TextField(null=True,blank=True)
+    quantity = models.IntegerField(default=0,null=True,blank=True)
+    
     @property
     def ImageURL(self):
         try:

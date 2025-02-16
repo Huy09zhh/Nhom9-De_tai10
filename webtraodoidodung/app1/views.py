@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 from .models import *
 import json
@@ -7,6 +7,50 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
+def product_create(request, slug=None):
+    categories = Category.objects.all()  # Lấy toàn bộ danh mục
+
+    if request.method == "POST":
+        category_ids = request.POST.getlist('category')  # Lấy danh sách danh mục từ form
+        name = request.POST.get('name', '')
+        price = request.POST.get('price', 0)
+        image = request.FILES.get('image', None)
+        detail = request.POST.get('detail', '')
+        digital = request.POST.get('digital', 'false') == 'true'  # Chuyển từ chuỗi sang boolean
+        quantity = request.POST.get('quantity', 0)  # Lấy số lượng từ form
+
+        # Tạo sản phẩm
+        item_product = Product(quantity=quantity, name=name, price=price, image=image, digital=digital, detail=detail)
+        item_product.save()
+
+        # Gán danh mục
+        if category_ids:
+            item_product.category.set(Category.objects.filter(id__in=category_ids))
+
+        messages.success(request, 'Sản phẩm được tạo thành công!')
+
+        return redirect('/')
+
+    return render(request, 'app1/product_create.html', {'categories': categories})
+
+def product_list(request):
+    products = Product.objects.all()
+
+    # Tạo danh sách sản phẩm kèm theo số lượng bán
+    items_product = []
+    for product in products:
+        total_sold = OrderItem.objects.filter(product=product).aggregate(total=models.Sum('quantity'))['total'] or 0
+        items_product.append({
+            'name': product.name,
+            'price': product.price,
+            'quantity': total_sold,  # Gán số lượng đã bán
+        })
+
+    return render(request, 'app1/product_list.html', {'items_product': items_product})
+
+def product_update(request):
+    return render(request, 'app1/product_update.html', {})
+
 def detail(request):
     if request.user.is_authenticated:
         customer = request.user

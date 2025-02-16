@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Tạp Hóa</title>
+    <!-- Link to Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="mt-5">
+
+        <div class="container">
+            <div class="mb-5 d-flex justify-content-between align-items-end">
+                <h1>Danh sách sản phẩm</h1>
+                <a href="/product_create/" class="btn btn-info">Thêm mới</a>
+            </div>
+
+            <div class="alert alert-success">
+                <ul class="mb-0">
+
+                    <li>Số lượng bán đã được cập nhật.</li>
+
+                </ul>
+            </div>
+
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th>Tên hàng hóa</th>
+                        <th>Giá tiền</th>
+                        <th>Số lượng đang bán</th>
+                        <th></th>
+                        <th>Bán sản phẩm</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items_product %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                        <td>{{ item.quantity }}</td>             
+                        <td>
+                            <a href="/update/{{ item.id }}/" class="btn btn-info btn-sm">Sửa</a>
+                            <a href="/delete/{{ item.id }}/" class="btn btn-danger btn-sm"
+                                onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?')">Xóa</a>
+                        </td>
+                        <td>
+                            <form method="get" action="/sell/{{ item.id }}/" class="d-flex justify-content-center">
+                                <input type="number" name="quantity" class="form-control form-control-sm w-75"
+                                    placeholder="Nhập số lượng" required>
+                                <button type="submit" class="btn btn-success btn-sm ml-1"
+                                    onclick="return confirm('Xác nhận bán sản phẩm này?')">Bán</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="text-right mt-4">
+                <h5>Tổng doanh thu: 2,156,000</h5>
+                <h5>Tổng lợi nhuận: 374,300</h5>
+            </div>
+        </div>
+
+    </div>
+    <!-- Scripts for Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>
