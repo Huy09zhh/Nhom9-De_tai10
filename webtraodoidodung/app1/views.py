@@ -7,6 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 
 # Create your views here.
+
 def product_create(request, slug=None):
     categories = Category.objects.all()  # Lấy toàn bộ danh mục
 
@@ -17,10 +18,12 @@ def product_create(request, slug=None):
         image = request.FILES.get('image', None)
         detail = request.POST.get('detail', '')
         digital = request.POST.get('digital', 'false') == 'true'  # Chuyển từ chuỗi sang boolean
-        quantity = request.POST.get('quantity', 0)  # Lấy số lượng từ form
+        stock_quantity = request.POST.get('stock_quantity', '')
+        sold_quantity = request.POST.get('sold_quantity', '')
+
 
         # Tạo sản phẩm
-        item_product = Product(quantity=quantity, name=name, price=price, image=image, digital=digital, detail=detail)
+        item_product = Product(stock_quantity=stock_quantity,sold_quantity=sold_quantity,name=name, price=price, image=image, digital=digital, detail=detail)
         item_product.save()
 
         # Gán danh mục
@@ -34,19 +37,10 @@ def product_create(request, slug=None):
     return render(request, 'app1/product_create.html', {'categories': categories})
 
 def product_list(request):
-    products = Product.objects.all()
-
-    # Tạo danh sách sản phẩm kèm theo số lượng bán
-    items_product = []
-    for product in products:
-        total_sold = OrderItem.objects.filter(product=product).aggregate(total=models.Sum('quantity'))['total'] or 0
-        items_product.append({
-            'name': product.name,
-            'price': product.price,
-            'quantity': total_sold,  # Gán số lượng đã bán
-        })
-
-    return render(request, 'app1/product_list.html', {'items_product': items_product})
+    items_product = Product.objects.all()
+    return render(request, 'app1/product_list.html', {
+        "items_product": items_product
+    })
 
 def product_update(request):
     return render(request, 'app1/product_update.html', {})

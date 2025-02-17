@@ -25,8 +25,12 @@ class Product(models.Model):
     digital = models.BooleanField(default=False,null=True,blank=False)
     image = models.ImageField(null=True,blank=True)
     detail = models.TextField(null=True,blank=True)
-    quantity = models.IntegerField(default=0,null=True,blank=True)
-    
+    stock_quantity = models.PositiveIntegerField(default=0)  # Số lượng đang bán
+    sold_quantity = models.PositiveIntegerField(default=0)   # Số lượng đã bán
+
+    def is_out_of_stock(self):
+        return self.stock_quantity <= 0  # Kiểm tra hết hàng hay chưa
+
     @property
     def ImageURL(self):
         try:

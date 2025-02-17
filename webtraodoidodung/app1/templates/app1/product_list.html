@@ -32,6 +32,7 @@
                         <th>Tên hàng hóa</th>
                         <th>Giá tiền</th>
                         <th>Số lượng đang bán</th>
+                        <th>Số lượng đã bán</th>
                         <th></th>
                         <th>Bán sản phẩm</th>
                     </tr>
@@ -41,7 +42,8 @@
                     <tr>
                         <td>{{ item.name }}</td>
                         <td>{{ item.price }}</td>
-                        <td>{{ item.quantity }}</td>             
+                        <td>{{ item.stock_quantity }}</td>
+                        <td>{{ item.sold_quantity }}</td>             
                         <td>
                             <a href="/update/{{ item.id }}/" class="btn btn-info btn-sm">Sửa</a>
                             <a href="/delete/{{ item.id }}/" class="btn btn-danger btn-sm"
@@ -49,7 +51,7 @@
                         </td>
                         <td>
                             <form method="get" action="/sell/{{ item.id }}/" class="d-flex justify-content-center">
-                                <input type="number" name="quantity" class="form-control form-control-sm w-75"
+                                <input type="number" name="stock_quantity" class="form-control form-control-sm w-75"
                                     placeholder="Nhập số lượng" required>
                                 <button type="submit" class="btn btn-success btn-sm ml-1"
                                     onclick="return confirm('Xác nhận bán sản phẩm này?')">Bán</button>

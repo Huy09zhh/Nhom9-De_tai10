@@ -24,6 +24,16 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="stock_quantity" class="form-label">Số Lượng đang bán:</label>
+                    <input type="number" step="0.01" class="form-control" name="stock_quantity" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="sold_quantity" class="form-label">Số Lượng đã bán:</label>
+                    <input type="number" step="0.01" class="form-control" name="sold_quantity" required>
+                </div>
+
+                <div class="mb-3">
                     <label>Danh mục:</label>
                     <select name="category" multiple>
                         {% for cat in categories %}
