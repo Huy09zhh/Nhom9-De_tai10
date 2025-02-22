@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse, JsonResponse
 from .models import *
 import json
+from django.conf import settings  # Thêm dòng này
+import os
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
@@ -18,8 +20,8 @@ def product_create(request, slug=None):
         image = request.FILES.get('image', None)
         detail = request.POST.get('detail', '')
         digital = request.POST.get('digital', 'false') == 'true'  # Chuyển từ chuỗi sang boolean
-        stock_quantity = request.POST.get('stock_quantity', '')
-        sold_quantity = request.POST.get('sold_quantity', '')
+        stock_quantity = request.POST.get('stock_quantity', '0')
+        sold_quantity = request.POST.get('sold_quantity', '0')
 
 
         # Tạo sản phẩm
@@ -32,20 +34,67 @@ def product_create(request, slug=None):
 
         messages.success(request, 'Sản phẩm được tạo thành công!')
 
-        return redirect('/')
+        return redirect('/product_list/')
 
     return render(request, 'app1/product_create.html', {'categories': categories})
 
 def product_list(request):
     items_product = Product.objects.all()
+
+    total_revenue =  sum(product.price * product.sold_quantity for product in items_product)
+
     return render(request, 'app1/product_list.html', {
-        "items_product": items_product
+        "items_product": items_product,
+        "total_revenue": total_revenue
     })
 
-def product_update(request):
-    return render(request, 'app1/product_update.html', {})
+def product_update(request, product_id):
+    item_product = get_object_or_404(Product, id=product_id)
+    categories = Category.objects.all()
+
+    if request.method == "POST":
+        category_ids = request.POST.getlist('category')  
+        item_product.name = request.POST.get('name', item_product.name)
+        item_product.price = request.POST.get('price', item_product.price)
+        item_product.detail = request.POST.get('detail', item_product.detail)
+        item_product.digital = request.POST.get('digital', 'false') == 'true'
+        item_product.stock_quantity = request.POST.get('stock_quantity', item_product.stock_quantity)
+        item_product.sold_quantity = request.POST.get('sold_quantity', item_product.sold_quantity)
+
+        # Cập nhật hình ảnh nếu có
+        if 'image' in request.FILES:
+            item_product.image = request.FILES['image']
+
+        # Lưu sản phẩm đã chỉnh sửa
+        item_product.save()
+
+        # Cập nhật danh mục sản phẩm
+        if category_ids:
+            item_product.category.set(Category.objects.filter(id__in=category_ids))
+
+        messages.success(request, 'Sản phẩm được cập nhật thành công!')
+        
+        return redirect('/product_list/')
+
+    return render(request, 'app1/product_update.html', {'item_product': item_product, 'categories': categories})
+
+def product_delete(request, product_id):
+    item_product = Product.objects.get(id=product_id)
+
+    # Xóa hình ảnh
+    if item_product.image:
+        image_path = os.path.join(settings.MEDIA_ROOT, str(item_product.image))
+        if os.path.exists(image_path):  # Kiểm tra file có tồn tại không
+            os.remove(image_path)  # Xóa file ảnh
+
+    item_product.delete()
+    messages.success(request, 'Sản phẩm được xóa thành công!')
+    return redirect('/product_list/')
 
 def detail(request):
+
+    OrderItem.objects.filter(product=None).delete()
+
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(customer = customer, complete = False)
@@ -54,13 +103,16 @@ def detail(request):
         user_login = "show"   
     else:
         items = []
-        order = {'get_itemtrade_items': 0, 'get_itemtrade_total': 0}
+        order = Order.objects.get_or_create(customer=customer, complete=False)[0]
+
+        print("Type of order:", type(order), order)
+
         user_not_login = "show"
         user_login = "hidden"
     id = request.GET.get('id','') 
     products = Product.objects.filter(id=id)
     categories = Category.objects.filter(is_sub = False)
-    context= {'created': created,'products':products,'categories':categories,'items':items,'order':order, 'user_not_login':user_not_login, 'user_login': user_login}
+    context= {'products':products,'categories':categories,'items':items,'order':order, 'user_not_login':user_not_login, 'user_login': user_login}
     return render(request, 'app1/detail.html',context)
 
 def category(request):
@@ -133,6 +185,9 @@ def logoutPage(request):
     return redirect('login')
 
 def home(request):
+
+    OrderItem.objects.filter(product=None).delete()
+
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(customer = customer, complete = False)
@@ -141,7 +196,8 @@ def home(request):
         user_login = "show"       
     else:
         items = []
-        order = {'get_itemtrade_items': 0, 'get_itemtrade_total': 0}
+        order = Order.objects.get_or_create(customer=customer, complete=False)[0]
+
         user_not_login = "show"
         user_login = "hidden" 
     categories = Category.objects.filter(is_sub = False)
@@ -151,6 +207,9 @@ def home(request):
     return render(request, 'app1/home.html',context)
 
 def itemtrade(request):
+
+    OrderItem.objects.filter(product=None).delete()
+
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(customer = customer, complete = False)
@@ -159,7 +218,8 @@ def itemtrade(request):
         user_login = "show"   
     else:
         items = []
-        order = {'get_itemtrade_items': 0, 'get_itemtrade_total': 0}
+        order = Order.objects.get_or_create(customer=customer, complete=False)[0]
+
         user_not_login = "show"
         user_login = "hidden" 
     categories = Category.objects.filter(is_sub = False)
@@ -167,6 +227,9 @@ def itemtrade(request):
     return render(request, 'app1/itemtrade.html',context)
 
 def checkout(request):
+
+    OrderItem.objects.filter(product=None).delete()
+
     if request.user.is_authenticated:
         customer = request.user
         order, created = Order.objects.get_or_create(customer = customer, complete = False)
@@ -175,13 +238,18 @@ def checkout(request):
         user_login = "show"   
     else:
         items = []
-        order = {'get_itemtrade_items': 0, 'get_itemtrade_total': 0}
+        order = Order.objects.get_or_create(customer=customer, complete=False)[0]
+
         user_not_login = "show"
         user_login = "hidden" 
     context= {'items':items,'order':order, 'user_not_login':user_not_login, 'user_login': user_login}
     return render(request, 'app1/checkout.html',context)
 
 def updateItem(request):
+
+    # Xóa các OrderItem bị lỗi trước khi xử lý
+    OrderItem.objects.filter(product=None).delete()  
+
     data = json.loads(request.body)
     productId = data['productId']
     action = data['action']

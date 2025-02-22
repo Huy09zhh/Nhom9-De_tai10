@@ -1,5 +1,6 @@
 {% extends 'app1/base.html' %}
 {% load static %}
+{% load humanize %}
 <html>
     <head>
         <meta charset="utf-8">
@@ -32,18 +33,25 @@
                                             </span> 
                                         </div> 
                                         <!-- giỏ hàng checkout -->
+                                        {% if request.user.is_authenticated %}
                                         <a href="{% url 'checkout' %}">Danh sách trao đổi</a></span>
+                                        {% else %}
+                                        <a class="" href="{% url 'login' %}"></a>                                                
+                                        {% endif %}
                                     </div>                                    
                                     <div class="mt-4 mb-3"> <span class="text-uppercase text-muted brand">Orianz</span>
                                         <h5 class="text-uppercase">{{product.name}}</h5>
-                                        <div class="price d-flex flex-row align-items-center"> <span class="act-price">{{product.price}} đồng</span>
+                                        <div class="price d-flex flex-row align-items-center"> <span class="act-price">{{product.price|intcomma}} đồng</span>
                                         </div>
                                     </div>
                                     <p class="about">{{product.detail}}</p>
-
+                                {% if request.user.is_authenticated %}
                                 <div class ="cart nt 4 align-items-center">
                                     <button data-product={{product.id}} data-action = "add" class="btn btn-danger text-uppercase mr-2 px-4-add-btn update-itemtrade">Thêm vào giỏ hàng</button>
                                     {% comment %} <i class="fa fa-heart text-muted"></i> <i class="fa fa-share-alt text-muted"></i> </div> {% endcomment %}
+                                {% else %}
+                                    <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để mua</a>                                                
+                                {% endif %}
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 {% extends 'app1/base.html' %}
+{% load humanize %}
 {% load static %}
 {% block banner_slider %}
 <div id="carouselExampleDark" class="carousel carousel-dark slide">
@@ -42,20 +43,28 @@
     {% for product in products %}
     <div class="col-lg-3">
         <img class="thumbnail" src="{{product.ImageURL}}">
-        <div class="box-element product">
+
+        {% comment %} <div class="box-element product">
             <h6><strong>{{product.name}}</strong></h6>
-            <hr>
+            <hr> {% endcomment %}
+
+            <div class="box-element product">
+              <div class="d-flex justify-content-between align-items-center">
+                  <h6><strong>{{ product.name }}</strong></h6>
+                  <span class="text-black">Số Lượng: <strong>{{ product.stock_quantity }}</strong></span>
+              </div>
+              <hr>
 
           {% if request.user.is_authenticated %}
           <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-itemtrade">Thêm vào giỏ hàng</button>
-          <a class="btn btn-outline-success" href="{% url 'detail' %}?id={{product.id}}">Xem</a>
           {% else %}
-          <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để xem</a>
+          <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để mua</a>
           {% endif %}
-            <h3 style="display: inline-block; float: right"><strong>{{product.price}} đồng </strong></h3>
+          <a class="btn btn-outline-success" href="{% url 'detail' %}?id={{product.id}}">Xem</a>
+            <h3 style="display: inline-block; float: right"><strong>{{product.price|intcomma}} đồng </strong></h3>
         </div>  
     </div>
-    {% endfor %}
+      {% endfor %}
 </div>
 <br /><br /><br /> <!--break: ngắt hàng-->
 {% endblock main-content %}
