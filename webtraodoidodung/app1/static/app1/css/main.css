@@ -52,7 +52,7 @@ h1,h2,h3,h4,h5,h6{
 
 .btn{
     white-space: nowrap; /* Không cho chữ xuống dòng */
-	padding: 6px 12px; /* Giảm padding để nút không quá to */
+	padding: 4px 4px; /* Giảm padding để nút không quá to */
 	border-radius: 0;
 }
 
@@ -104,4 +104,12 @@ h1,h2,h3,h4,h5,h6{
     width: 100%; /* Đảm bảo chiếm toàn bộ chiều rộng */
     min-width: 150px; /* Giữ kích thước tối thiểu để không quá nhỏ */
     max-width: fit-content; /* Co giãn theo nội dung */
+}
+
+.price {
+    white-space: nowrap;  /* Không cho xuống dòng */
+    overflow: hidden;      /* Ẩn phần dư nếu không đủ chỗ */
+    text-overflow: ellipsis; /* Hiển thị "..." nếu quá dài */
+    font-size: 18px;       /* Giảm kích thước chữ để vừa khung */
+    max-width: 100%;       /* Giới hạn độ rộng tối đa */
 }

@@ -1,9 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-
 # Create your models here.
 # Change form register django
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    balance = models.DecimalField(max_digits=10, decimal_places=2, default=0)  # Số dư
+
+    def __str__(self):
+        return f"{self.user.username} - {self.balance}"
 
 # Category
 class Category(models.Model):
@@ -19,6 +25,7 @@ class CreateUserForm(UserCreationForm):
         fields = ['username','email','first_name','last_name','password1','password2']
 
 class Product(models.Model):
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, related_name="products")  # Người bán
     category = models.ManyToManyField(Category,related_name='product')
     name = models.CharField(max_length=200,null=True)
     price = models.PositiveIntegerField()
@@ -27,6 +34,9 @@ class Product(models.Model):
     detail = models.TextField(null=True,blank=True)
     stock_quantity = models.PositiveIntegerField(default=0)  # Số lượng đang bán
     sold_quantity = models.PositiveIntegerField(default=0)   # Số lượng đã bán
+
+    def __str__(self):
+        return f"{self.name} - {self.seller.username}"
 
     def is_out_of_stock(self):
         return self.stock_quantity <= 0  # Kiểm tra hết hàng hay chưa
@@ -80,3 +90,4 @@ class TradeAddress(models.Model):
 
     def __str__(self):
         return str(self.id)
+        

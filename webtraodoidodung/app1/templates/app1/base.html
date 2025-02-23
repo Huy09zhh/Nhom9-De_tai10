@@ -1,4 +1,5 @@
 {% load static %}
+{% load humanize %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
@@ -50,7 +51,7 @@
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
               <a class="navbar-brand" href={% url 'home' %}>
-                <img src= "{% static 'app1/images/logouth.png' %}" width="240" height="50" />
+                <img src= "{% static 'app1/images/logofu.png' %}" width="240" height="50" />
               </a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -71,11 +72,11 @@
                       <li><hr class="dropdown-divider"></li>
                     </ul>
                   </li>
-                  <li class="nav-item">
+                  {% comment %} <li class="nav-item">
                     <a class="nav-link" aria-disabled="true">Giới Thiệu</a>
-                  </li>
+                  </li> {% endcomment %}
                   <li class="nav-item">
-                    <a class="nav-link" href="#">Liên Hệ</a>
+                    <a class="nav-link" href="https://www.facebook.com/university.fpt.edu.vn" target="_blank">Liên Hệ</a>
                   </li>
                 </ul>
                 <form class="d-flex" role="search" method = POST action = "{% url 'search' %}">
@@ -97,6 +98,14 @@
                 
                 <li class="nav-item" style="visibility: {{user_login}}; list-style: none;">
                   <a class="nav-link" href="{% url 'itemtrade' %}">Danh Sách Trao Đổi</a>
+                </li>
+
+                <li class="nav-item" style="visibility: {{user_login}}; list-style: none;">
+                  <a class="nav-link" href="{% url 'product_list' %}">Bán Sản Phẩm</a>
+                </li>
+
+                <li class="nav-item" style="visibility: {{user_login}}; list-style: none;">
+                  <span class="nav-link text-success">Số dư: {{ user_balance|floatformat:0 |intcomma }} Đồng</span>
                 </li>
 
               <ul class="nav d-flex" style="gap: 15px;">
@@ -129,8 +138,8 @@
     <!--detail-->
     {% block detail %}{% endblock detail %}
     <!-- Footer -->
-    <footer class="container--fluid bg-success text-center fixed-bottom p-2 nt-5">
-        copyright 2025
+    <footer class="container--fluid text-center fixed-bottom p-2 nt-5" style="background-color: #E67E22;" >
+        Đại Học FPT UNIVERSITY
     </footer>
       <script src="{%static 'app1/js/itemtrade.js'%}" > </script>
     </body>

@@ -45,20 +45,21 @@
         <img class="thumbnail" src="{{product.ImageURL}}">
 
         {% comment %} <div class="box-element product">
-            <h6><strong>{{product.name}}</strong></h6>
-            <hr> {% endcomment %}
+            <h6><strong>{{product.name}}</strong></h6>{% endcomment %}
+            <hr> 
 
             <div class="box-element product">
               <div class="d-flex justify-content-between align-items-center">
-                  <h6><strong>{{ product.name }}</strong></h6>
+                  <h6><strong>{{ product.name }}</strong></h6><br>
                   <span class="text-black">Số Lượng: <strong>{{ product.stock_quantity }}</strong></span>
               </div>
+              <p>Người bán: <strong>{{ product.seller.username }}</strong></p>
               <hr>
 
           {% if request.user.is_authenticated %}
-          <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-itemtrade">Thêm vào giỏ hàng</button>
+          <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-itemtrade">Thêm vào danh sách</button>
           {% else %}
-          <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để mua</a>
+          <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để trao đổi</a>
           {% endif %}
           <a class="btn btn-outline-success" href="{% url 'detail' %}?id={{product.id}}">Xem</a>
             <h3 style="display: inline-block; float: right"><strong>{{product.price|intcomma}} đồng </strong></h3>

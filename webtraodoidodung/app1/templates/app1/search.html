@@ -11,17 +11,18 @@
     </head>
     <body>
         {% block search  %}
-        <h5> Result search for {{searched}}</h5> <br />
+        <h5> Kết quả tìm kiếm: {{searched}}</h5> <br />
         <div class="row" style="width:100%;">
           {% for product in keys %}
           <div class="col-lg-3">
               <img class="thumbnail" src="{{product.ImageURL}}">
               <div class="box-element product">
                   <h6><strong>{{product.name}}</strong></h6>
+                  <p>Người bán: <strong>{{ product.seller.username }}</strong></p>
                   <hr>
       
                   {% if request.user.is_authenticated %}
-                  <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-itemtrade">Thêm vào giỏ hàng</button>
+                  <button data-product={{product.id}} data-action="add" class="btn btn-outline-secondary add-btn update-itemtrade">Thêm vào danh sách</button>
                   <a class="btn btn-outline-success" href="{% url 'detail' %}?id={{product.id}}">Xem</a>
                   {% else %}
                   <a class="btn btn-outline-warning" href="{% url 'login' %}">Đăng nhập để xem</a>

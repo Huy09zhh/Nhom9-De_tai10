@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path
 from . import views
+from .views import confirm_order 
 
 urlpatterns = [
     path('', views.home,name="home"),
@@ -16,6 +17,7 @@ urlpatterns = [
     path('search/', views.search,name="search"),
     path('itemtrade/', views.itemtrade,name="itemtrade"),
     path('checkout/', views.checkout,name="checkout"),
-    path('update_item/', views.updateItem,name="update_item"),  
+    path('update_item/', views.updateItem,name="update_item"),
+    path('confirm_order/', views.confirm_order, name="confirm_order"),
 
 ]

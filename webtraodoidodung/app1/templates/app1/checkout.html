@@ -1,70 +1,56 @@
 {% extends 'app1/base.html' %}
 {% load static %}
 {% load humanize %}
+
 {% block content_checkout %}
-     <div class="row" style= "width:100%">
-		<div class="col-lg-6">
-			<div class="box-element" id="form-wrapper">
-				<form id="form">
-					<div id="user-info">
-						<div class="form-field">
-							<input required class="form-control" type="text" name="name" placeholder="Họ Và Tên..">
-						</div>
-						<div class="form-field">
-							<input required class="form-control" type="email" name="email" placeholder="Email..">
-						</div>
-					</div>
-					
-					<div id="shipping-info">
-						<hr>
-						<p>Shipping Information:</p>
-						<hr>
-						<div class="form-field">
-							<input class="form-control" type="text" name="address" placeholder="Địa chỉ..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="city" placeholder="Thành Phố..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="state" placeholder="Chỗ ở hiện tại..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="phonenumber" placeholder="Số Điện Thoại..">
-						</div>
-						<div class="form-field">
-							<input class="form-control" type="text" name="country" placeholder="Quê Quán..">
-						</div>
-					</div>
+<div class="row" style="width:100%">
+    <div class="col-lg-6">
+        <div class="box-element" id="form-wrapper">
+            <form id="checkout-form">
+                {% csrf_token %}
+                <div id="user-info">
+                    <div class="form-field">
+                        <input required class="form-control" type="text" id="name" name="name" placeholder="Họ Và Tên..">
+                    </div>
+                    <div class="form-field">
+                        <input required class="form-control" type="email" id="email" name="email" placeholder="Email..">
+                    </div>
+                </div>
 
-					<hr>
-					<input id="form-button" class="btn btn-success btn-block" type="submit" value="Tiếp tục">
-				</form>
-			</div>
+                <hr>
+                <button type="submit" id="confirm-button" class="btn btn-success btn-block">Đồng Ý</button>
+            </form>
+        </div>
+        <br>
+    </div>
 
-			<br>
-			<div class="box-element hidden" id="payment-info">
-				<small>Paypal Options</small>
-			</div>
+    <div class="col-lg-6">
+        <div class="box-element">
+            <a class="btn btn-outline-dark" href="{% url 'itemtrade' %}">&#x2190; Trở Về Danh Sách Trao Đổi</a>
+            <hr>
+            <h3>Vật Phẩm Đang Chờ</h3>
+            <hr>
+            {% for item in items %}
+            <div class="cart-row">
+                <div style="flex:2">
+                    <img class="row-image" src="{{item.product.ImageURL}}">
+                </div>
+                <div style="flex:2">
+                    <p>{{item.product.name}}</p>
+                </div>
+                <div style="flex:1">
+                    <p>{{item.product.price|intcomma}} đồng</p>
+                </div>
+                <div style="flex:1">
+                    <p>Số lượng: {{item.quantity}}</p>
+                </div>
+            </div>
+            {% endfor %}
+            <h5>Sản phẩm: {{order.get_itemtrade_items}}</h5>
+            <h5>Tiền: {{order.get_itemtrade_total|intcomma}} đồng</h5>
+        </div>
+    </div>    
 
-		</div>
+</div>
 
-		<div class="col-lg-6">
-			<div class="box-element">
-				<a  class="btn btn-outline-dark" href="{% url 'itemtrade' %}">&#x2190; Trở Về Danh Sách Trao Đổi</a>
-				<hr>
-				<h3>Vật Phẩm Đang Chờ</h3>
-				<hr>
-				{% for item in items %}
-				<div class="cart-row">
-					<div style="flex:2"><img class="row-image" src="{{item.product.ImageURL}}"></div>
-					<div style="flex:2"><p>{{item.product.name}}</p></div>
-					<div style="flex:1"><p>{{item.product.price}} đồng</p></div>
-					<div style="flex:1"><p>{{item.quantity}}</p></div>
-				</div>
-				{% endfor %}
-				<h5>Sản phẩm: {{order.get_itemtrade_items}}</h5>
-				<h5>Tiền: {{order.get_itemtrade_total}} đồng</h5>
-			</div>
-		</div>
-	</div>
-    {% endblock content_checkout %}
+{% endblock content_checkout %}
